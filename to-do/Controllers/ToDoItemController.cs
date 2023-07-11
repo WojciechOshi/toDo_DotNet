@@ -7,17 +7,24 @@ namespace to_do.Controllers
     [Route("[controller]")]
     public class ToDoItemController : ControllerBase
     {
+        public ToDoItemController(IDBMock dbMock)
+        {
+            DbMock = dbMock;
+        }
+
+        public IDBMock DbMock { get; }
+
         [HttpGet]
         public IEnumerable<ToDoItem> Get()
         {
-            return Enumerable.Range(1, 5).Select(index => new ToDoItem
-            {
-                Name = "Dagulka",
-                Description = "Kupila cwela w ciescie",
-                CashValue = 420,
-                Date = DateTime.Now.AddDays(index),
-            })
-            .ToArray();
+            return DbMock.GetData();
+        }
+
+        [HttpPost]
+        public IActionResult Post(ToDoItem item)
+        {
+            DbMock.AddData(item);
+            return Ok("Item created successfully.");
         }
     }
 }

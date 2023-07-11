@@ -14,7 +14,7 @@
     </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let todoitems of todoitem">
+    <tr *ngFor="let todoitem of todoitems">
       <td>{{ todoitem.name }}</td>
       <td>{{ todoitem.cashValue }}</td>
       <td>{{ todoitem.description }}</td>
@@ -22,3 +22,5 @@
     </tr>
   </tbody>
 </table>
+
+<button (click)="createToDoItem()">Dodaj nowy wiersz</button>
