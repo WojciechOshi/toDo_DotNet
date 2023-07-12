@@ -22,7 +22,7 @@ namespace ToDo
 
                 // Create the table if it doesn't exist
                 connection.Execute(@"CREATE TABLE IF NOT EXISTS ToDoList (
-                                Name TEXT PRIMARY KEY,
+                                Name TEXT NOT NULL,
                                 CashValue DOUBLE NOT NULL,
                                 Description TEXT NOT NULL,
                                 Date DATETIME NOT NULL

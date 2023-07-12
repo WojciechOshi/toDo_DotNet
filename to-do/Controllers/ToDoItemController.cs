@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.Sqlite;
 using to_do.Models;
 using to_do.Persistance;
 
@@ -32,8 +33,30 @@ namespace to_do.Controllers
         [HttpPost]
         public IActionResult Post(ToDoItem item)
         {
-            DbMock.AddData(item);
-            return new JsonResult(DbMock.GetData());
+            var connection = _sqliteConnectionFactory.CreateConnection();
+
+            connection.Open();
+
+            // Prepare the INSERT statement
+            var insertSql = @"INSERT INTO ToDoList (Name, CashValue, Description, Date)
+                      VALUES (@Name, @CashValue, @Description, @Date)";
+
+            // Create a command object
+            using (var command = new SqliteCommand(insertSql, (SqliteConnection?)connection))
+            {
+                // Add parameters and set their values
+                command.Parameters.AddWithValue("@Name", item.Name);
+                command.Parameters.AddWithValue("@CashValue", item.CashValue);
+                command.Parameters.AddWithValue("@Description", item.Description);
+                command.Parameters.AddWithValue("@Date", item.Date);
+
+                // Execute the INSERT statement
+                command.ExecuteNonQuery();
+            }
+
+            var toDoItems = connection.Query<ToDoItem>("SELECT * FROM ToDoList");
+
+            return new JsonResult(toDoItems);
         }
     }
 }

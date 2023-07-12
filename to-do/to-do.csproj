@@ -9,12 +9,16 @@
     <SpaProxyLaunchCommand>npm start</SpaProxyLaunchCommand>
     <RootNamespace>to_do</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>17e2e2cb-c184-4efe-b45c-289924b6e562</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <DockerfileContext>.</DockerfileContext>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Dapper" Version="2.0.143" />
     <PackageReference Include="Microsoft.AspNetCore.SpaProxy" Version="6.0.10" />
     <PackageReference Include="Microsoft.Data.Sqlite" Version="7.0.9" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.18.1" />
   </ItemGroup>
 
   <ItemGroup>
@@ -25,7 +29,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Database\" />
+    <None Remove="Database\database.db" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Database\database.db">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
 
     <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
