@@ -1,3 +1,6 @@
+using to_do.Persistance;
+using ToDo;
+
 namespace to_do
 {
     public class Program
@@ -7,9 +10,20 @@ namespace to_do
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-
             builder.Services.AddControllersWithViews();
             builder.Services.AddSingleton<IDBMock, DbMock>();
+            builder.Services.AddSingleton<IDBCreator, DbCreator>();
+
+            builder.Services.AddTransient<ISQLiteConnectionFactory, SQLiteConnectionFactory>();
+
+            var serviceProvider = builder.Services.BuildServiceProvider();
+
+            using (var scope = serviceProvider.CreateScope())
+            {
+                var dbCreator = scope.ServiceProvider.GetRequiredService<IDBCreator>();
+                dbCreator.CreateDatabase();
+            }
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

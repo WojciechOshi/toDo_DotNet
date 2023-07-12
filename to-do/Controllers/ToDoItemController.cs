@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Dapper;
+using Microsoft.AspNetCore.Mvc;
 using to_do.Models;
+using to_do.Persistance;
 
 namespace to_do.Controllers
 {
@@ -7,9 +9,12 @@ namespace to_do.Controllers
     [Route("[controller]")]
     public class ToDoItemController : ControllerBase
     {
-        public ToDoItemController(IDBMock dbMock)
+        private readonly ISQLiteConnectionFactory _sqliteConnectionFactory;
+
+        public ToDoItemController(IDBMock dbMock, ISQLiteConnectionFactory sqLiteConnectionFactory)
         {
             DbMock = dbMock;
+            _sqliteConnectionFactory = sqLiteConnectionFactory;
         }
 
         public IDBMock DbMock { get; }
@@ -17,7 +22,11 @@ namespace to_do.Controllers
         [HttpGet]
         public IEnumerable<ToDoItem> Get()
         {
-            return DbMock.GetData();
+            var connection = _sqliteConnectionFactory.CreateConnection();
+
+            var toDoItems = connection.Query<ToDoItem>("SELECT * FROM ToDoList");
+
+            return toDoItems;
         }
 
         [HttpPost]
