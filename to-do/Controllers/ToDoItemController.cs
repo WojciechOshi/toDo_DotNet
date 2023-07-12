@@ -24,7 +24,7 @@ namespace to_do.Controllers
         public IActionResult Post(ToDoItem item)
         {
             DbMock.AddData(item);
-            return Ok("Item created successfully.");
+            return new JsonResult(DbMock.GetData());
         }
     }
 }
